@@ -6,6 +6,7 @@ const nextConfig = {
     RAWG_API_KEY: process.env.RAWG_API_KEY,
   },
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',

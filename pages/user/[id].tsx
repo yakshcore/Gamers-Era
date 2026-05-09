@@ -2,8 +2,8 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { GetServerSideProps } from 'next';
-import { collection, getDocs } from 'firebase/firestore';
+import { useRouter } from 'next/router';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 
 import { db } from '../../firebase/firebase.config';
 
@@ -26,11 +26,37 @@ import { formatName } from '../../lib/helpers';
 import placeholderImg from '../../public/assets/placeholder.avif';
 import FollowersTab from '../../components/FollowersTab';
 
-interface Props {
-  data: UserInterface;
-}
+export default function User() {
+  const router = useRouter();
+  const { id: docId } = router.query;
+  const [user, setUser] = useState<UserInterface | any>(null);
+  const [loadingUser, setLoadingUser] = useState(true);
 
-export default function User({ data: user }: Props) {
+  useEffect(() => {
+    if (!docId) return;
+    const fetchUser = async () => {
+      setLoadingUser(true);
+      try {
+        const usersRef = collection(db, `users`);
+        const q = query(usersRef, where("uid", "==", docId));
+        const snapshot = await getDocs(q);
+        if (!snapshot.empty) {
+          const d = snapshot.docs[0];
+          setUser({
+            ...d.data(),
+            createdAt: d.data().createdAt?.toJSON ? d.data().createdAt.toJSON() : d.data().createdAt,
+            updatedAt: d.data().updatedAt?.toJSON ? d.data().updatedAt.toJSON() : d.data().updatedAt,
+          });
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingUser(false);
+      }
+    };
+    fetchUser();
+  }, [docId]);
+
   const { currentUser } = useUser();
   const { removeBookmark } = useBookmarkMutation();
 
@@ -84,6 +110,9 @@ export default function User({ data: user }: Props) {
 
     return () => unsub();
   }, [user?.uid, bookmarksData]);
+
+  if (loadingUser) return <div className="p-8 text-center">Loading...</div>;
+  if (!user) return <div className="p-8 text-center">User not found</div>;
 
   return (
     <>
@@ -283,27 +312,4 @@ export default function User({ data: user }: Props) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const docId = ctx?.query?.id;
 
-  const usersRef = collection(db, `users`);
-  const users: { uid?: string; createdAt: string; updatedAt: string }[] = [];
-
-  const snapshot = await getDocs(usersRef);
-
-  snapshot.forEach((d) =>
-    users.push({
-      ...d.data(),
-      createdAt: d.data().createdAt ? d.data().createdAt.toJSON() : null,
-      updatedAt: d.data().updatedAt ? d.data().updatedAt.toJSON() : null,
-    })
-  );
-
-  const data = users.filter((user) => user.uid === docId).at(0);
-
-  return {
-    props: {
-      data,
-    },
-  };
-};
