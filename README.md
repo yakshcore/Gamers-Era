@@ -58,6 +58,16 @@ In conclusion, this project has been one wild ride. And I'm thrilled with the en
 - [Flowbite](https://flowbite.com/docs/getting-started/introduction/) - Flowbite is an open-source library of UI components based on the utility-first Tailwind CSS framework featuring dark mode support, a Figma design system, and more.
 - [Mastering data fetching with React Query and Next.js](https://prateeksurana.me/blog/mastering-data-fetching-with-react-query-and-next-js/) - Really cool article that helped me to get started with Next.JS and React Query.
 
+## Star History
+
+<a href="https://www.star-history.com/?repos=yakshcore%2FGamers-Era&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=yakshcore/Gamers-Era&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=yakshcore/Gamers-Era&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=yakshcore/Gamers-Era&type=date&legend=top-left" />
+ </picture>
+</a>
+
 ## Author
 
 [@Yaksh Devani](https://github.com/yaksh-devani/)
